@@ -1,0 +1,233 @@
+[
+  {
+    "slug": "trace-an-api-request",
+    "title": "Trace one request. Find the broken handoff.",
+    "topic": "API integration",
+    "type": "Field guide",
+    "minutes": 5,
+    "intro": "A practical sequence for locating a failure between a website, its backend and an external service.",
+    "sections": [
+      [
+        "Start with one reproducible request",
+        "Choose a failing action you can repeat safely. Record the environment, time, expected result and actual response. Remove access tokens and personal information before sharing a trace. A useful report follows one request from the browser to the backend and then to the external service."
+      ],
+      [
+        "Check each boundary",
+        "Inspect the browser request URL, method and payload. Confirm the backend route receives the same values. Then inspect the outbound request and its status, response body and timing. Separate authentication failures from validation errors and upstream outages; each needs a different fix."
+      ],
+      [
+        "Prove the recovery",
+        "Change one cause at a time. Repeat the original request, then test missing input and an upstream failure. Record the response shape that the frontend expects. A successful upstream response is not enough if the interface cannot interpret it."
+      ]
+    ],
+    "checklist": [
+      "Capture a safe, reproducible request",
+      "Compare payloads at every handoff",
+      "Retest the success and failure paths"
+    ],
+    "code": "Browser → Backend validation → External API\n        ← Consistent response ← Parsed result"
+  },
+  {
+    "slug": "design-a-retry-policy",
+    "title": "Retries should recover work, not duplicate it.",
+    "topic": "API integration",
+    "type": "Checklist",
+    "minutes": 4,
+    "intro": "Set boundaries around retry behavior before a temporary failure turns into repeated side effects.",
+    "sections": [
+      [
+        "Classify the failure",
+        "A timeout does not prove that the upstream operation failed. It may have completed before the response was lost. Identify operations that can be retried safely and use an idempotency key where the provider supports it."
+      ],
+      [
+        "Keep retries bounded",
+        "Use a maximum attempt count and an overall deadline. Back off between attempts and add jitter to avoid synchronized bursts. Respect documented rate-limit signals. Do not blindly retry validation or permission failures."
+      ],
+      [
+        "Make the final state visible",
+        "Record the attempt count, last error and request identifier without storing secrets. When automatic recovery is exhausted, place the item into an explicit review state. Manual replay should follow the same duplicate-prevention rule as an automatic attempt."
+      ]
+    ],
+    "checklist": [
+      "Define which failures are retryable",
+      "Set attempt and time limits",
+      "Verify duplicate prevention",
+      "Expose exhausted retries"
+    ],
+    "code": "attempt → temporary failure → backoff\n        → retry → success OR needs review"
+  },
+  {
+    "slug": "human-review-for-ai",
+    "title": "Put human review where mistakes matter.",
+    "topic": "AI automation",
+    "type": "Playbook",
+    "minutes": 6,
+    "intro": "A review step works best when people can see the original input, the suggested result and what will happen next.",
+    "sections": [
+      [
+        "Choose the decision boundary",
+        "List the actions a workflow can take. Drafting text and sending it to a customer have different consequences. Put review before externally visible or hard-to-reverse actions. Agree which low-risk tasks can proceed automatically."
+      ],
+      [
+        "Show enough evidence",
+        "Present the original input next to the generated output. If a result relies on retrieved documents, show the relevant source passage. Make corrections easy and distinguish a model suggestion from a validated fact. A confidence label alone is not evidence."
+      ],
+      [
+        "Learn from corrections",
+        "Store review decisions only as needed for the workflow. Track rejection categories so you can identify missing context, unclear instructions or unsuitable tasks. Test changes against a held-out set of examples and include difficult cases, not only successful ones."
+      ]
+    ],
+    "checklist": [
+      "Separate draft generation from approval",
+      "Show input and source context",
+      "Allow edit, approve and reject",
+      "Record useful correction categories"
+    ],
+    "code": "Input → AI draft → Human review\n                   ├─ revise\n                   ├─ reject\n                   └─ approve → downstream action"
+  },
+  {
+    "slug": "web-ai-boundaries",
+    "title": "Keep AI service credentials behind your backend.",
+    "topic": "AI automation",
+    "type": "Field guide",
+    "minutes": 4,
+    "intro": "A small separation of responsibilities makes website AI features easier to control, maintain and inspect.",
+    "sections": [
+      [
+        "Define a narrow browser contract",
+        "Let the browser send only the fields the feature needs. Validate type and size on the backend. The server should own provider credentials and permitted model settings; browser code and public repositories are not secret storage."
+      ],
+      [
+        "Control resource use",
+        "Set a request-size limit, timeout and bounded output length. Add authentication or appropriate abuse controls before exposing costly operations publicly. Return useful error messages without exposing raw provider traces or secret-bearing headers."
+      ],
+      [
+        "Keep the interface honest",
+        "Show when a request is processing and allow recovery from failure. Explain whether output is a draft. Avoid presenting model output as authoritative just because it arrived through a polished interface."
+      ]
+    ],
+    "checklist": [
+      "Keep provider keys server-side",
+      "Validate and limit input",
+      "Handle timeout and provider errors",
+      "Label generated output accurately"
+    ],
+    "code": "Website → Your backend → AI provider\n           validates       returns draft\n           protects key"
+  },
+  {
+    "slug": "legacy-migration-baseline",
+    "title": "Before migrating, capture what must keep working.",
+    "topic": "Legacy software",
+    "type": "Playbook",
+    "minutes": 6,
+    "intro": "Build a behavior baseline before changing a long-lived Windows application.",
+    "sections": [
+      [
+        "Inventory the operating assumptions",
+        "Record the current Windows environment, compiler/toolset, dependencies, install path and permission requirements. Include representative input files and external system connections. Keep a buildable baseline where licensing and access allow."
+      ],
+      [
+        "Describe behavior, not just screens",
+        "Choose essential user journeys: start the application, open an existing file, edit data, save and reopen it, print or export, and close safely. Record expected outputs and known defects separately. A screenshot shows appearance; repeatable checks show behavior."
+      ],
+      [
+        "Change and compare",
+        "Introduce compatibility changes in small steps. Rebuild and rerun the baseline checks after each change. Pay attention to file permissions, text encoding, path assumptions and dependency availability. Document intentionally changed behavior and unresolved limitations."
+      ]
+    ],
+    "checklist": [
+      "Record environment and dependencies",
+      "Save representative input and output",
+      "Define essential user journeys",
+      "Separate known defects from regressions"
+    ],
+    "code": "Baseline → Small compatibility change\n         → Build → Behavior comparison\n         → Record result"
+  },
+  {
+    "slug": "safe-modernization-handover",
+    "title": "A migration is only useful if the next person can build it.",
+    "topic": "Legacy software",
+    "type": "Checklist",
+    "minutes": 4,
+    "intro": "Turn a successful local build into a repeatable handover for an existing C++ application.",
+    "sections": [
+      [
+        "Write down the build path",
+        "Document the Visual Studio edition and version, selected components, architecture and configuration. List dependencies and where they come from. Include the actual build command or a clear sequence of IDE actions."
+      ],
+      [
+        "Rehearse a clean setup",
+        "A developer’s workstation often contains hidden dependencies. Verify the instructions on a clean environment when possible. Record any steps that still need manual access or licensed components; do not describe a build as reproducible until it has been reproduced."
+      ],
+      [
+        "Leave operational notes",
+        "Describe installation, configuration, important log locations and rollback steps. Include which Windows versions and workflows were actually checked. A precise limitation is more useful than a broad compatibility claim."
+      ]
+    ],
+    "checklist": [
+      "List toolchain and dependency versions",
+      "Document build and install steps",
+      "Record verified Windows environments",
+      "Include rollback and known limitations"
+    ],
+    "code": "Source + toolchain + dependencies\n       + build steps + test inputs\n       = a reviewable handover"
+  },
+  {
+    "slug": "wordpress-form-quality",
+    "title": "A form is a workflow, not a submit button.",
+    "topic": "WordPress",
+    "type": "Field guide",
+    "minutes": 5,
+    "intro": "Check what happens before and after a visitor sends a service inquiry.",
+    "sections": [
+      [
+        "Design for an understandable request",
+        "Use visible labels and make required fields clear. Ask only for information the next step needs. Group related fields and keep the message prompt specific. Do not make placeholder text carry the responsibility of a label."
+      ],
+      [
+        "Validate on the server",
+        "Browser validation improves usability but can be bypassed. Check lengths, expected choices and email format on the server. Protect state-changing requests and escape stored text when displaying it. Keep personal information out of public pages and logs."
+      ],
+      [
+        "Confirm the real outcome",
+        "Only show success after storage or delivery succeeds. Say whether a message was saved, sent or queued. Test the staff side: can an authorized person find the inquiry, export it if needed and delete it when it is no longer required?"
+      ]
+    ],
+    "checklist": [
+      "Visible labels and useful instructions",
+      "Server validation and output escaping",
+      "Success follows successful storage",
+      "Staff access, export and deletion tested"
+    ],
+    "code": "Visitor input → Validation → Storage\n                            → Confirmation\n                            → Staff review"
+  },
+  {
+    "slug": "responsive-checks",
+    "title": "Check the awkward widths, too.",
+    "topic": "WordPress",
+    "type": "Checklist",
+    "minutes": 3,
+    "intro": "A short, repeatable review for layouts that need to work beyond a single desktop screenshot.",
+    "sections": [
+      [
+        "Test content under pressure",
+        "Check a narrow mobile viewport, a medium tablet width and a wide display. Use long headings and realistic text. Watch for clipped buttons, horizontal overflow and cards with unpredictable heights."
+      ],
+      [
+        "Use the keyboard",
+        "Move through navigation, links and forms with Tab. Ensure the focus indicator is visible and follows a sensible order. Check that controls have useful labels, errors can be understood and important content is available without a pointer."
+      ],
+      [
+        "Review what actually ships",
+        "Use the real font stack, images and content. Inspect loading and error states where they exist. A small screenshot gallery is useful for review, but it cannot replace interacting with the final page."
+      ]
+    ],
+    "checklist": [
+      "Narrow, medium and wide viewport checks",
+      "Long text and realistic content",
+      "Visible keyboard focus",
+      "Form, loading and error states"
+    ],
+    "code": "Layout → Content stress → Keyboard\n       → Real interaction → Fix → Recheck"
+  }
+]
