@@ -33,7 +33,7 @@ python3 wordpress_setup.py
 
 Open http://127.0.0.1:8188. This starts an isolated WordPress installation and MariaDB database, installs the included original theme and plugin, and prepares the content. Both Docker images are pinned by digest. WordPress 7.1.2 was actually executed during verification.
 
-Admin: http://127.0.0.1:8188/wp-admin/ . Username: `portfolio_admin`. The generated password is the `WP_ADMIN_PASSWORD` value in `.local.env`. Keep that file local; do not publish it. The file is generated on first run and is excluded from the deliverable. A fresh setup chooses a unique Docker project name, so it does not collide with the temporary verification environment. Keep the generated file to preserve access to that installation on subsequent runs. An example.invalid email is used for this local installation and setup mail is disabled. The database is stored in a dedicated Docker volume. No other project database is modified.
+Admin: http://127.0.0.1:8188/wp-admin/ . Username: `port_admin`. The generated password is the `WP_ADMIN_PASSWORD` value in `.local.env`. Keep that file local; do not publish it. The file is generated on first run and is excluded from the deliverable. A fresh setup chooses a unique Docker project name, so it does not collide with the temporary verification environment. Keep the generated file to preserve access to that installation on subsequent runs. An example.invalid email is used for this local installation and setup mail is disabled. The database is stored in a dedicated Docker volume. No other project database is modified.
 
 Stop without deleting data:
 
@@ -75,7 +75,7 @@ The first command launches its own temporary standalone test server. The second 
 
 ## Scope and ownership
 
-Original code, editorial content, layouts and CSS illustration assets are included. System fonts are used; there are no external image/font dependencies and no videos. `CASE_STUDY.md` describes only the implemented work and observed results. The screenshots above were captured from the running WordPress application.
+Original code, editorial content, layouts and CSS illustration assets are included. System fonts are used; there are no external image/font dependencies and no videos. The screenshots above were captured from the running WordPress application.
 
 ## Before public deployment
 

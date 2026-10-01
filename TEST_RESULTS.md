@@ -26,7 +26,7 @@ Official WordPress image, PHP 8.3 image family, WordPress **7.1.2**, MariaDB ima
 
 ## Limits
 
-Automated HTTP checks do not execute browser JavaScript, so localStorage persistence and visual/mobile behavior need browser interaction. Root portfolio assembly performs that browser check and screenshots separately. No audience, SEO, formal accessibility, load or public-deployment results are claimed.
+Automated HTTP checks do not execute browser JavaScript, so localStorage persistence and visual/mobile behavior need browser interaction. Root port assembly performs that browser check and screenshots separately. No audience, SEO, formal accessibility, load or public-deployment results are claimed.
 
 ## Additional browser verification
 
